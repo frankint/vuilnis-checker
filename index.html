@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spaarnelanden Afval & Container Checker</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>♻️</text></svg>">
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-title-group">
+        <div class="header-icon">♻️</div>
+        <div>
+          <h1 class="app-title">Spaarnelanden Vuilnis & Container Checker</h1>
+          <p class="app-subtitle">Live afvalkalender en container vulgraad status</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Search / Parameter Form -->
+    <section class="search-card">
+      <form id="search-form" class="search-form">
+        <div class="form-group">
+          <label for="postcode">Postcode</label>
+          <input type="text" id="postcode" class="form-input" placeholder="bv. 2012WT" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="house_number">Huisnummer</label>
+          <input type="text" id="house_number" class="form-input" placeholder="bv. 1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="sRegistrationNumber">
+            Container Registratienr. (Ga naar
+            <a href="https://inzameling.spaarnelanden.nl/" target="_blank" rel="noopener noreferrer">
+                inzameling.spaarnelanden.nl
+            </a>,
+            klik op uw restafval bak, en kopieer dat nummer.)
+        </label>
+          <input type="text" id="sRegistrationNumber" class="form-input" placeholder="bv. 121387" required>
+        </div>
+
+        <div class="button-group">
+          <button type="submit" class="btn btn-primary">
+            🔍 Zoeken
+          </button>
+          <button type="button" id="copy-url-btn" class="btn btn-outline" title="Kopieer de huidige URL met parameters naar het klembord">
+            🔗 Unieke Link
+          </button>
+        </div>
+      </form>
+
+      <div class="url-info-bar">
+        <span>URL query parameters: <code id="current-url-badge" class="url-badge">?postcode=...&house_number=...&sRegistrationNumber=...</code></span>
+      </div>
+    </section>
+
+    <!-- Error Alert Banner -->
+    <div id="error-alert" class="alert alert-danger hidden" role="alert">
+      <span>⚠️</span>
+      <div id="error-message"></div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-state" class="loading-state hidden">
+      <div class="spinner"></div>
+      <p>Gegevens ophalen bij Spaarnelanden...</p>
+    </div>
+
+    <!-- Main Dashboard Grid -->
+    <main id="dashboard-content" class="dashboard-grid hidden">
+      
+      <!-- SECTION 1: Afvalkalender (Spaarnelanden Afvalwijzer API) -->
+      <section class="card">
+        <h2 class="card-title">
+          <span class="card-title-icon">📅</span> Afvalophaal Schema
+        </h2>
+
+        <!-- Python Script Highlight Targets: Eerst aan de beurt / Daarna -->
+        <div class="highlight-box">
+          <div id="hero-first" class="schedule-hero groenbak hidden">
+            <div class="hero-label">Eerst aan de beurt</div>
+            <div id="first-hero-name" class="hero-name">Groenbak</div>
+            <div class="hero-date">
+              <span id="first-hero-date">maandag 31 augustus 2026</span>
+              <span id="first-hero-badge" class="hero-badge">over 12 dagen</span>
+            </div>
+          </div>
+
+          <div id="hero-next" class="schedule-hero grijzebak hidden">
+            <div class="hero-label">Daarna</div>
+            <div id="next-hero-name" class="hero-name">Grijze bak</div>
+            <div class="hero-date">
+              <span id="next-hero-date">dinsdag 25 augustus 2026</span>
+              <span id="next-hero-badge" class="hero-badge">over 6 dagen</span>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="days-schedule-title" style="margin-top: 1.5rem;">Alle Komende Afvalstromen</h3>
+        <div id="all-streams-list" class="stream-list">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- SECTION 2: Container Status (sRegistrationNumber API) -->
+      <section class="card container-meter-card">
+        <h2 class="card-title" style="width: 100%;">
+          <span class="card-title-icon">🗑️</span> Container Status
+        </h2>
+
+        <!-- Percentage Meter / Circular Gauge -->
+        <div class="gauge-container">
+          <svg class="gauge-svg" viewBox="0 0 160 160">
+            <circle class="gauge-bg" cx="80" cy="80" r="70"></circle>
+            <circle id="gauge-fill" class="gauge-fill" cx="80" cy="80" r="70" stroke-dasharray="439.8" stroke-dashoffset="439.8"></circle>
+          </svg>
+          <div class="gauge-center-text">
+            <span id="gauge-percentage" class="gauge-percentage">0%</span>
+            <span class="gauge-subtext">Vullingsgraad</span>
+          </div>
+        </div>
+
+        <!-- Status Pills -->
+        <div class="status-pill-row">
+          <span id="pill-emptied-today" class="status-pill inactive">• Vandaag geleegd</span>
+          <span id="pill-out-of-use" class="status-pill inactive">• In gebruik</span>
+          <span id="pill-skipped" class="status-pill inactive">• Niet overgeslagen</span>
+        </div>
+
+        <!-- Metadata Properties Grid -->
+        <div class="meta-grid">
+          <div class="meta-item">
+            <div class="meta-label">Registratienr.</div>
+            <div id="meta-reg-number" class="meta-value">-</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Afvalstroom</div>
+            <div id="meta-product" class="meta-value">-</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Type Container</div>
+            <div id="meta-kind" class="meta-value">-</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Laatst Geleegd</div>
+            <div id="meta-last-emptied" class="meta-value">-</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Status Level</div>
+            <div id="meta-fill-status" class="meta-value">-</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Wijk ID</div>
+            <div id="meta-district" class="meta-value">-</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Stadsdeel ID</div>
+            <div id="meta-city-district" class="meta-value">-</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Container ID</div>
+            <div id="meta-id" class="meta-value">-</div>
+          </div>
+        </div>
+
+        <!-- Location Coordinates -->
+        <div style="width: 100%; text-align: left; margin-top: 1rem;">
+          <div class="meta-label">Locatie Coördinaten</div>
+          <div id="meta-coords" class="meta-value">-</div>
+          <a id="map-link-btn" href="#" target="_blank" rel="noopener noreferrer" class="map-link-btn hidden">
+            📍 Open in Google Maps
+          </a>
+        </div>
+
+        <!-- Ophaaldagen Schema (sDefaultDays) -->
+        <div class="days-schedule-box">
+          <div class="days-schedule-title">Ophaaldagen Schema</div>
+          <div id="days-schedule-icons" class="days-schedule-icons">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Raw JSON Inspector Accordion -->
+        <div style="width: 100%; text-align: left;">
+          <button type="button" id="toggle-json-btn" class="details-toggle">
+            🔍 Bekijk ruwe JSON data
+          </button>
+          <div id="raw-json-container" class="raw-json-container hidden">
+            <pre id="raw-json"></pre>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- SECTION 3: Terminal Simulation Window (Raw Data Stream) -->
+    <section class="terminal-card">
+      <div class="terminal-header">
+        <div class="terminal-dots">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+        </div>
+        <div class="terminal-title">spaarnelanden-raw-stream.log - bash</div>
+        <div class="terminal-actions">
+          <button type="button" id="term-replay-btn" class="term-btn" title="Herstart data-stream animatie">▶ Replay</button>
+          <button type="button" id="term-copy-btn" class="term-btn" title="Kopieer logboek">📋 Kopieer Log</button>
+          <button type="button" id="term-clear-btn" class="term-btn" title="Wissen">🧹 Clear</button>
+        </div>
+      </div>
+      <div id="terminal-body" class="terminal-body">
+        <!-- Terminal lines populated dynamically by app.js -->
+      </div>
+    </section>
+
+    <footer>
+      <p>Spaarnelanden Afval & Container Checker • Standalone & Serverless Capable</p>
+    </footer>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
