@@ -56,7 +56,8 @@
       </form>
 
       <div class="url-info-bar">
-        <span>URL query parameters: <code id="current-url-badge" class="url-badge">?postcode=...&house_number=...&sRegistrationNumber=...</code></span>
+        <span>URL query parameters:</span>
+        <code id="current-url-badge" class="url-badge">?postcode=...&house_number=...&sRegistrationNumber=...</code>
       </div>
     </section>
 
@@ -219,9 +220,38 @@
       </div>
     </section>
 
-    <footer>
-      <p>Spaarnelanden Afval & Container Checker • Standalone & Serverless Capable</p>
+    <!-- ⚖️ Legal Footer Section -->
+    <footer class="app-footer">
+      <div class="footer-grid">
+        
+        <div class="footer-col">
+          <h4 class="footer-col-title">⚖️ Disclaimer & Onafhankelijkheid</h4>
+          <p>
+            Deze applicatie is een onafhankelijk hulpmiddel en is niet gelieerd aan, geaffilieerd met of officieel ondersteund door <strong>Spaarnelanden N.V.</strong> of de gemeenten Haarlem en Zandvoort. Alle merknamen en handelsmerken behoren toe aan hun respectievelijke eigenaren.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">🔒 Privacy & AVG (GDPR)</h4>
+          <p>
+            Er worden <strong>geen persoonsgegevens</strong> verzameld, opgeslagen of doorgegeven naar externe servers. Alle ingevoerde gegevens (postcode, huisnummer, registratienummer) blijven uitsluitend lokaal in uw eigen browser of verwerkt in de URL. Er wordt geen gebruik gemaakt van trackingcookies.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">⚠️ Aansprakelijkheid & Data</h4>
+          <p>
+            De getoonde afvalkalender en vullingsgraden worden via openbare netwerkverzoeken opgehaald van <a href="https://afvalwijzer.spaarnelanden.nl/" target="_blank" rel="noopener noreferrer">Spaarnelanden Afvalwijzer</a> en <a href="https://inzameling.spaarnelanden.nl/" target="_blank" rel="noopener noreferrer">Inzameling Spaarnelanden</a>. Aan de getoonde ophaaldata en percentages kunnen <strong>geen rechten worden ontleend</strong>.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Spaarnelanden Afval & Container Checker • Uitgegeven onder de MIT Licentie • Standalone & Serverless</p>
+      </div>
     </footer>
+
   </div>
 
   <script src="js/app.js"></script>
