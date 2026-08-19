@@ -26,6 +26,12 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
 }
 
 body {
@@ -72,6 +78,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1.75rem;
+  flex-shrink: 0;
 }
 
 .app-title {
@@ -149,6 +156,7 @@ body {
   gap: 0.5rem;
   transition: var(--transition);
   white-space: nowrap;
+  min-height: 42px;
 }
 
 .btn-primary {
@@ -156,7 +164,7 @@ body {
   color: white;
 }
 
-.btn-primary:hover {
+.btn-primary:hover, .btn-primary:active {
   background-color: var(--primary-hover);
 }
 
@@ -166,7 +174,7 @@ body {
   color: var(--neutral-dark);
 }
 
-.btn-outline:hover {
+.btn-outline:hover, .btn-outline:active {
   background-color: var(--neutral-light);
   border-color: #cbd5e1;
 }
@@ -182,6 +190,7 @@ body {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.5rem;
+  word-break: break-all;
 }
 
 .url-badge {
@@ -190,6 +199,7 @@ body {
   border-radius: 4px;
   font-family: monospace;
   color: var(--primary-hover);
+  word-break: break-all;
 }
 
 /* Status / Alert Banners */
@@ -369,6 +379,7 @@ body {
   border-radius: var(--radius-sm);
   background: var(--neutral-light);
   border: 1px solid #f3f4f6;
+  gap: 0.5rem;
 }
 
 .stream-info {
@@ -386,6 +397,7 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .stream-icon-img {
@@ -411,6 +423,7 @@ body {
   border-radius: 6px;
   background: #e2e8f0;
   color: #334155;
+  white-space: nowrap;
 }
 
 /* Container Vullingsgraad Meter */
@@ -510,7 +523,7 @@ body {
 /* Metadata Grid */
 .meta-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 0.75rem;
   width: 100%;
   margin-top: 1rem;
@@ -763,4 +776,182 @@ footer a {
 
 footer a:hover {
   text-decoration: underline;
+}
+
+/* 📱 MOBILE RESPONSIVE MEDIA QUERIES */
+@media (max-width: 640px) {
+  .container {
+    padding: 0.75rem 0.6rem;
+  }
+  
+  .app-header {
+    padding: 1.25rem 1rem;
+    border-radius: var(--radius-md);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .header-title-group {
+    gap: 0.75rem;
+  }
+
+  .header-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.4rem;
+  }
+
+  .app-title {
+    font-size: 1.3rem;
+  }
+
+  .app-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .search-card {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+  }
+
+  .search-form {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .form-input {
+    padding: 0.75rem 0.85rem;
+    font-size: 1rem; /* Prevents auto-zoom in iOS Safari */
+  }
+
+  .button-group {
+    flex-direction: column;
+    width: 100%;
+
+    gap: 0.5rem;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    min-height: 44px;
+  }
+
+  .url-info-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .card {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+  }
+
+  .hero-name {
+    font-size: 1.1rem;
+  }
+
+  .hero-date {
+    font-size: 0.85rem;
+  }
+
+  .stream-item {
+    padding: 0.65rem 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .stream-info {
+    width: 100%;
+  }
+
+  .stream-days-badge {
+    align-self: flex-end;
+  }
+
+  .gauge-container {
+    width: 140px;
+    height: 140px;
+    margin: 0.5rem 0 1rem;
+  }
+
+  .gauge-percentage {
+    font-size: 1.8rem;
+  }
+
+  .status-pill-row {
+    gap: 0.35rem;
+  }
+
+  .status-pill {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+  }
+
+  .meta-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .meta-item {
+    padding: 0.6rem;
+  }
+
+  .meta-label {
+    font-size: 0.7rem;
+  }
+
+  .meta-value {
+    font-size: 0.85rem;
+  }
+
+  .terminal-card {
+    border-radius: var(--radius-md);
+    margin-top: 1.5rem;
+  }
+
+  .terminal-header {
+    padding: 0.55rem 0.75rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .terminal-title {
+    font-size: 0.75rem;
+  }
+
+  .terminal-actions {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 0.3rem;
+  }
+
+  .term-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .terminal-body {
+    padding: 0.75rem;
+    max-height: 280px;
+    font-size: 0.75rem;
+  }
+
+  .term-time {
+    margin-right: 0.4rem;
+  }
+
+  .term-prompt {
+    margin-right: 0.3rem;
+  }
 }
